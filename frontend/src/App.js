@@ -416,7 +416,7 @@ const ProjectsSection = () => {
 
 // Achievements Section Component
 const AchievementsSection = () => {
-  const [ref, inView] = useIntersection();
+  const [ref, inView] = useInViewHook();
   
   const achievements = [
     {
