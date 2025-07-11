@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text3D, Float, MeshDistortMaterial, Sphere, Box, Cylinder } from '@react-three/drei';
 import { useInView as useInViewHook } from 'react-intersection-observer';
 import { 
@@ -460,6 +460,90 @@ const HeroSection = () => {
   );
 };
 
+// Mini 3D Scene Component for individual sections
+const Mini3DScene = ({ symbols, size = 100, count = 3, speed = 0.5 }) => {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
+      <Canvas camera={{ position: [0, 0, 5] }}>
+        <ambientLight intensity={0.3} />
+        <pointLight position={[10, 10, 10]} intensity={0.3} />
+        {Array.from({ length: count }).map((_, index) => (
+          <Float3DMathSymbol
+            key={index}
+            symbol={symbols[index % symbols.length]}
+            position={[
+              (Math.random() - 0.5) * 8,
+              (Math.random() - 0.5) * 6,
+              (Math.random() - 0.5) * 4
+            ]}
+            size={size}
+            speed={speed}
+          />
+        ))}
+      </Canvas>
+    </div>
+  );
+};
+
+// Floating 3D Math Symbol for mini scenes
+const Float3DMathSymbol = ({ symbol, position, size, speed }) => {
+  const meshRef = useRef();
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += 0.01 * speed;
+      meshRef.current.rotation.y += 0.01 * speed;
+      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * speed) * 0.5;
+    }
+  });
+
+  // Different shapes based on symbol type
+  const getGeometry = (symbol) => {
+    switch (symbol) {
+      case '○':
+      case '◯':
+      case '◉':
+        return <sphereGeometry args={[size/120, 16, 16]} />;
+      case '△':
+        return <coneGeometry args={[size/120, size/80, 8]} />;
+      case '□':
+      case '◇':
+      case '◆':
+        return <boxGeometry args={[size/100, size/100, size/120]} />;
+      case '★':
+      case '✦':
+        return <dodecahedronGeometry args={[size/120]} />;
+      case '⬟':
+        return <cylinderGeometry args={[size/120, size/120, size/80, 6]} />;
+      default:
+        return <boxGeometry args={[size/100, size/100, size/120]} />;
+    }
+  };
+
+  const getColor = (symbol) => {
+    const colors = {
+      '∫': '#60a5fa', '∑': '#a78bfa', '∞': '#34d399', '∂': '#fbbf24',
+      'α': '#f472b6', 'β': '#06b6d4', 'γ': '#84cc16', 'θ': '#ef4444', 'λ': '#8b5cf6',
+      '○': '#3b82f6', '△': '#10b981', '□': '#f59e0b', '◇': '#ec4899', '★': '#8b5cf6',
+      '@': '#06b6d4', '☎': '#10b981', '📍': '#ef4444', '✉': '#3b82f6', '🌐': '#8b5cf6'
+    };
+    return colors[symbol] || '#60a5fa';
+  };
+
+  return (
+    <mesh ref={meshRef} position={position}>
+      {getGeometry(symbol)}
+      <meshStandardMaterial 
+        color={getColor(symbol)} 
+        transparent 
+        opacity={0.6}
+        metalness={0.3}
+        roughness={0.4}
+      />
+    </mesh>
+  );
+};
+
 // Mathematical Quotes Component
 const MathematicalQuotes = () => {
   const [ref, inView] = useInViewHook();
@@ -502,8 +586,16 @@ const MathematicalQuotes = () => {
   }, [mathematicalQuotes.length]);
 
   return (
-    <section ref={ref} className="py-16 px-4 bg-gradient-to-br from-indigo-900 to-purple-900">
-      <div className="max-w-4xl mx-auto">
+    <section ref={ref} className="relative py-16 px-4 bg-gradient-to-br from-indigo-900 to-purple-900 overflow-hidden">
+      {/* 3D Background Elements */}
+      <Mini3DScene 
+        symbols={['∫', '∑', '∞', '∂']} 
+        size={80} 
+        count={4} 
+        speed={0.3} 
+      />
+      
+      <div className="relative max-w-4xl mx-auto z-10">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -566,6 +658,14 @@ const AboutSection = () => {
   
   return (
     <section id="about" ref={ref} className="py-20 px-4 bg-gray-900 relative overflow-hidden">
+      {/* 3D Background Elements */}
+      <Mini3DScene 
+        symbols={['α', 'β', 'γ', 'θ', 'λ']} 
+        size={60} 
+        count={5} 
+        speed={0.4} 
+      />
+      
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="grid grid-cols-12 gap-4 h-full">
@@ -660,8 +760,16 @@ const ProjectsSection = () => {
   ];
   
       return (
-      <section id="projects" ref={ref} className="pt-32 pb-20 px-4 bg-gradient-to-br from-gray-900 to-black">
-        <motion.div style={{ y }} className="max-w-6xl mx-auto">
+      <section id="projects" ref={ref} className="relative pt-32 pb-20 px-4 bg-gradient-to-br from-gray-900 to-black overflow-hidden">
+        {/* 3D Background Elements */}
+        <Mini3DScene 
+          symbols={['◇', '○', '△', '□', '◯']} 
+          size={70} 
+          count={6} 
+          speed={0.5} 
+        />
+        
+        <motion.div style={{ y }} className="relative max-w-6xl mx-auto z-10">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -683,6 +791,23 @@ const ProjectsSection = () => {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               className="group relative bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-300"
             >
+              {/* Mini 3D element for each project */}
+              <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none opacity-30 group-hover:opacity-60 transition-opacity">
+                <Canvas camera={{ position: [0, 0, 3] }}>
+                  <ambientLight intensity={0.5} />
+                  <mesh rotation={[0.1, 0.1, 0]}>
+                    {index === 0 && <torusGeometry args={[0.3, 0.1, 8, 16]} />}
+                    {index === 1 && <octahedronGeometry args={[0.3]} />}
+                    {index === 2 && <icosahedronGeometry args={[0.3]} />}
+                    <meshStandardMaterial 
+                      color={index === 0 ? "#06b6d4" : index === 1 ? "#10b981" : "#8b5cf6"} 
+                      transparent 
+                      opacity={0.8}
+                    />
+                  </mesh>
+                </Canvas>
+              </div>
+              
               <div className="relative overflow-hidden">
                 <img 
                   src={project.image}
@@ -789,8 +914,16 @@ const AchievementsSection = () => {
   ];
   
   return (
-    <section id="achievements" ref={ref} className="py-20 px-4 bg-gradient-to-br from-purple-900 to-gray-900">
-      <div className="max-w-6xl mx-auto">
+    <section id="achievements" ref={ref} className="relative py-20 px-4 bg-gradient-to-br from-purple-900 to-gray-900 overflow-hidden">
+      {/* 3D Background Elements */}
+      <Mini3DScene 
+        symbols={['★', '◆', '✦', '⬟', '◉']} 
+        size={90} 
+        count={4} 
+        speed={0.6} 
+      />
+      
+      <div className="relative max-w-6xl mx-auto z-10">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -909,8 +1042,16 @@ const ContactSection = () => {
   const [ref, inView] = useInViewHook();
   
   return (
-    <section id="contact" ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
-      <div className="max-w-4xl mx-auto">
+    <section id="contact" ref={ref} className="relative py-20 px-4 bg-gradient-to-br from-gray-900 to-black overflow-hidden">
+      {/* 3D Background Elements */}
+      <Mini3DScene 
+        symbols={['@', '☎', '📍', '✉', '🌐']} 
+        size={50} 
+        count={5} 
+        speed={0.3} 
+      />
+      
+      <div className="relative max-w-4xl mx-auto z-10">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
