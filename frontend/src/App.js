@@ -491,7 +491,7 @@ const AchievementsSection = () => {
 
 // Contact Section Component
 const ContactSection = () => {
-  const [ref, inView] = useIntersection();
+  const [ref, inView] = useInViewHook();
   
   return (
     <section ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
