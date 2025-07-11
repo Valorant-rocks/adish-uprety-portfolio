@@ -143,35 +143,46 @@ const Navigation = () => {
 
 // 3D Floating Mathematical Elements
 const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0] }) => {
-  const meshRef = useRef();
+  const textRef = useRef();
   
   useEffect(() => {
     const animateElement = () => {
-      if (meshRef.current) {
-        meshRef.current.rotation.x += 0.01;
-        meshRef.current.rotation.y += 0.01;
-        meshRef.current.position.y += Math.sin(Date.now() * 0.001) * 0.02;
+      if (textRef.current) {
+        textRef.current.rotation.x += 0.005;
+        textRef.current.rotation.y += 0.008;
+        textRef.current.position.y += Math.sin(Date.now() * 0.001 + position[0]) * 0.03;
       }
     };
     
     const interval = setInterval(animateElement, 16);
     return () => clearInterval(interval);
-  }, []);
+  }, [position]);
 
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <mesh ref={meshRef} position={position} rotation={rotation}>
-        {symbol === 'π' && <Cylinder args={[0.8, 0.8, 0.2]} />}
-        {symbol === 'e' && <Sphere args={[0.6]} />}
-        {symbol === 'i' && <Box args={[0.8, 0.8, 0.8]} />}
-        <MeshDistortMaterial 
-          color={color} 
-          attach="material" 
-          distort={0.3} 
-          speed={2} 
-          roughness={0.1}
+    <Float speed={1.5} rotationIntensity={0.8} floatIntensity={1.5}>
+      <Text3D
+        ref={textRef}
+        font="https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
+        position={position}
+        rotation={rotation}
+        size={1.2}
+        height={0.2}
+        curveSegments={12}
+        bevelEnabled
+        bevelThickness={0.02}
+        bevelSize={0.02}
+        bevelOffset={0}
+        bevelSegments={5}
+      >
+        {symbol}
+        <meshStandardMaterial 
+          color={color}
+          metalness={0.1}
+          roughness={0.3}
+          emissive={color}
+          emissiveIntensity={0.1}
         />
-      </mesh>
+      </Text3D>
     </Float>
   );
 };
@@ -183,29 +194,31 @@ const MathematicalScene = () => {
       camera={{ position: [0, 0, 10], fov: 75 }}
       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
     >
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
+      <ambientLight intensity={0.4} />
+      <pointLight position={[10, 10, 10]} intensity={0.8} />
+      <pointLight position={[-10, -10, 5]} intensity={0.4} color="#4a90e2" />
+      <directionalLight position={[0, 10, 5]} intensity={0.5} />
       
       <FloatingMathElement 
-        position={[-4, 2, 0]} 
+        position={[-4, 2, -1]} 
         color="#ff6b6b" 
         symbol="π" 
-        rotation={[0, 0, 0]}
+        rotation={[0.2, 0, 0.1]}
       />
       <FloatingMathElement 
-        position={[4, -2, 0]} 
+        position={[4, -1, 1]} 
         color="#4ecdc4" 
         symbol="e" 
-        rotation={[0, 0, 0]}
+        rotation={[-0.1, 0.3, 0]}
       />
       <FloatingMathElement 
-        position={[0, 3, -2]} 
+        position={[-1, 3, -2]} 
         color="#45b7d1" 
         symbol="i" 
-        rotation={[0, 0, 0]}
+        rotation={[0.1, -0.2, 0.3]}
       />
       
-      <OrbitControls enableZoom={false} enablePan={false} />
+      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
     </Canvas>
   );
 };
@@ -289,7 +302,7 @@ const HeroSection = () => {
             transition={{ duration: 1, delay: 0.5 }}
             className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent"
           >
-            Dr. Alex Chen
+            Adish Uprety
           </motion.h1>
           
           <motion.div 
@@ -398,7 +411,7 @@ const AboutSection = () => {
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
               <img 
                 src="https://images.unsplash.com/photo-1511629091441-ee46146481b6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwyfHxtYXRoZW1hdGljaWFuJTIwaGVhZHNob3R8ZW58MHx8fHwxNzUyMjEyNzQ3fDA&ixlib=rb-4.1.0&q=85"
-                alt="Dr. Alex Chen"
+                alt="Adish Uprety"
                 className="relative rounded-lg shadow-2xl w-full max-w-md mx-auto transform group-hover:scale-105 transition duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
@@ -412,7 +425,7 @@ const AboutSection = () => {
             className="text-white space-y-6"
           >
             <p className="text-lg leading-relaxed text-gray-300">
-              Welcome to my mathematical universe! I'm Dr. Alex Chen, a passionate researcher dedicated to exploring the elegant patterns and infinite possibilities within mathematics. With over a decade of experience in mathematical research and 3D visualization, I bridge the gap between abstract mathematical concepts and stunning visual representations.
+              Welcome to my mathematical universe! I'm Adish Uprety, a passionate researcher dedicated to exploring the elegant patterns and infinite possibilities within mathematics. With over a decade of experience in mathematical research and 3D visualization, I bridge the gap between abstract mathematical concepts and stunning visual representations.
             </p>
             
             <p className="text-lg leading-relaxed text-gray-300">
