@@ -317,3 +317,48 @@ html {
   0% { background-position: 0 0, 0 0; }
   100% { background-position: 50px 50px, 50px 50px; }
 }
+
+/* Light Mode Styles */
+.light {
+  background-color: #f8fafc;
+  color: #1a202c;
+}
+
+.light body {
+  background-color: #f8fafc;
+  color: #1a202c;
+}
+
+.light .mathematical-background {
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(66, 153, 225, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+}
+
+.light .mathematical-background::after {
+  color: rgba(0, 0, 0, 0.05);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.light .glass-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+.light ::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+
+.light .gradient-text {
+  background: linear-gradient(135deg, #4299e1 0%, #805ad5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

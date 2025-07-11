@@ -25,12 +25,79 @@ import {
   User,
   Briefcase,
   Trophy,
-  MessageCircle
+  MessageCircle,
+  Sun,
+  Moon
 } from 'lucide-react';
 import './App.css';
 
+// Particle System Component
+const ParticleSystem = () => {
+  const particles = [
+    '∫', '∑', '∏', '∆', '∇', '∂', '∞', '≈', '≡', '±', '∀', '∃', '∈', '⊂', '⊆', '∪', '∩',
+    'α', 'β', 'γ', 'δ', 'ε', 'θ', 'λ', 'μ', 'π', 'σ', 'φ', 'ψ', 'ω', '√', '∛', '∜'
+  ];
+
+  const [particleElements, setParticleElements] = useState([]);
+
+  useEffect(() => {
+    const generateParticles = () => {
+      const newParticles = Array.from({ length: 25 }, (_, i) => ({
+        id: i,
+        symbol: particles[Math.floor(Math.random() * particles.length)],
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 0.8 + 0.4,
+        opacity: Math.random() * 0.3 + 0.1,
+        duration: Math.random() * 20 + 15,
+        delay: Math.random() * 5
+      }));
+      setParticleElements(newParticles);
+    };
+
+    generateParticles();
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      {particleElements.map((particle) => (
+        <motion.div
+          key={particle.id}
+          initial={{
+            x: `${particle.x}vw`,
+            y: `${particle.y}vh`,
+            opacity: 0,
+            scale: 0
+          }}
+          animate={{
+            x: `${particle.x + (Math.random() - 0.5) * 30}vw`,
+            y: `${particle.y - 20}vh`,
+            opacity: particle.opacity,
+            scale: particle.size,
+            rotate: [0, 360]
+          }}
+          transition={{
+            duration: particle.duration,
+            delay: particle.delay,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "linear"
+          }}
+          className="absolute text-white/10 font-bold select-none"
+          style={{
+            fontSize: `${particle.size * 2}rem`,
+            fontFamily: 'serif'
+          }}
+        >
+          {particle.symbol}
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
 // Navigation Component
-const Navigation = () => {
+const Navigation = ({ isDark, toggleTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { scrollY } = useScroll();
@@ -97,6 +164,23 @@ const Navigation = () => {
                 <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></div>
               </motion.button>
             ))}
+            
+            {/* Theme Toggle */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleTheme}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300 border border-white/20"
+            >
+              {isDark ? (
+                <Sun size={20} className="text-yellow-400" />
+              ) : (
+                <Moon size={20} className="text-blue-300" />
+              )}
+            </motion.button>
           </div>
 
           {/* Mobile menu button */}
@@ -280,6 +364,43 @@ const HeroSection = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 1000], [0, -500]);
   
+  const mathematicalQuotes = [
+    {
+      quote: "Mathematics is the language with which God has written the universe.",
+      author: "Galileo Galilei"
+    },
+    {
+      quote: "Pure mathematics is, in its way, the poetry of logical ideas.",
+      author: "Albert Einstein"
+    },
+    {
+      quote: "Mathematics knows no races or geographic boundaries; for mathematics, the cultural world is one country.",
+      author: "David Hilbert"
+    },
+    {
+      quote: "In mathematics, the art of proposing a question must be held of higher value than solving it.",
+      author: "Georg Cantor"
+    },
+    {
+      quote: "Mathematics is not about numbers, equations, computations, or algorithms: it is about understanding.",
+      author: "William Paul Thurston"
+    },
+    {
+      quote: "The essence of mathematics lies in its freedom.",
+      author: "Georg Cantor"
+    }
+  ];
+
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentQuoteIndex((prev) => (prev + 1) % mathematicalQuotes.length);
+    }, 4000); // Change quote every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [mathematicalQuotes.length]);
+  
   return (
     <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
       {/* Mathematical Background Pattern */}
@@ -358,6 +479,30 @@ const HeroSection = () => {
         </div>
       </motion.div>
       
+      {/* Mathematical Quote */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 3.5 }}
+        className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-20 max-w-2xl px-4"
+      >
+        <motion.div
+          key={currentQuoteIndex}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.8 }}
+          className="text-center bg-black/20 backdrop-blur-sm rounded-lg p-6 border border-white/10"
+        >
+          <p className="text-white/90 text-sm md:text-base italic mb-3 leading-relaxed">
+            "{mathematicalQuotes[currentQuoteIndex].quote}"
+          </p>
+          <p className="text-blue-300 text-xs md:text-sm font-semibold">
+            — {mathematicalQuotes[currentQuoteIndex].author}
+          </p>
+        </motion.div>
+      </motion.div>
+      
       {/* Scroll Indicator */}
       <motion.div 
         initial={{ opacity: 0 }}
@@ -377,6 +522,8 @@ const HeroSection = () => {
 // About Section Component
 const AboutSection = () => {
   const [ref, inView] = useInViewHook();
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 2000], [0, -200]);
   
   return (
     <section id="about" ref={ref} className="py-20 px-4 bg-gray-900 relative overflow-hidden">
@@ -389,7 +536,7 @@ const AboutSection = () => {
         </div>
       </div>
       
-      <div className="max-w-6xl mx-auto relative z-10">
+      <motion.div style={{ y }} className="max-w-6xl mx-auto relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -435,7 +582,7 @@ const AboutSection = () => {
             </p>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
@@ -443,6 +590,8 @@ const AboutSection = () => {
 // Projects Section Component
 const ProjectsSection = () => {
   const [ref, inView] = useInViewHook();
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [500, 2500], [100, -300]);
   
   const projects = [
     {
@@ -471,9 +620,9 @@ const ProjectsSection = () => {
     }
   ];
   
-  return (
-    <section id="projects" ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
-      <div className="max-w-6xl mx-auto">
+      return (
+      <section id="projects" ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
+        <motion.div style={{ y }} className="max-w-6xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -531,7 +680,7 @@ const ProjectsSection = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
@@ -863,9 +1012,16 @@ const Footer = () => {
 
 // Main App Component
 function App() {
+  const [isDark, setIsDark] = useState(true);
+
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+  };
+
   return (
-    <div className="App">
-      <Navigation />
+    <div className={`App ${isDark ? 'dark' : 'light'}`}>
+      <ParticleSystem />
+      <Navigation isDark={isDark} toggleTheme={toggleTheme} />
       <HeroSection />
       <AboutSection />
       <ProjectsSection />
