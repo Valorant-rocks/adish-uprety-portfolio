@@ -278,7 +278,7 @@ const HeroSection = () => {
   const y = useTransform(scrollY, [0, 1000], [0, -500]);
   
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+    <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
       {/* Mathematical Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="mathematical-background"></div>
@@ -292,7 +292,7 @@ const HeroSection = () => {
       {/* Content */}
       <motion.div 
         style={{ y }}
-        className="relative z-20 flex items-center justify-center min-h-screen px-4"
+        className="relative z-20 flex items-center justify-center min-h-screen px-4 pt-16"
       >
         <div className="text-center text-white max-w-4xl mx-auto">
           <motion.h1 
@@ -331,6 +331,7 @@ const HeroSection = () => {
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' })}
               className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full text-white font-semibold text-lg overflow-hidden shadow-lg"
             >
               <span className="relative z-10 flex items-center">
