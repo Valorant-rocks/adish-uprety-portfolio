@@ -777,6 +777,7 @@ const Footer = () => {
 function App() {
   return (
     <div className="App">
+      <Navigation />
       <HeroSection />
       <AboutSection />
       <ProjectsSection />
