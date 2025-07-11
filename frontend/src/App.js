@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text3D, Float, MeshDistortMaterial, Sphere, Box, Cylinder } from '@react-three/drei';
-import { useInView } from 'react-intersection-observer';
+import { useInView as useInViewHook } from 'react-intersection-observer';
 import { 
   Mail, 
   Phone, 
