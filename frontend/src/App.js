@@ -9,6 +9,8 @@ import {
   MapPin, 
   Github, 
   Linkedin, 
+  Youtube,
+  Facebook,
   Award, 
   BookOpen, 
   Users, 
@@ -142,30 +144,21 @@ const Navigation = () => {
 };
 
 // 3D Floating Mathematical Elements
-const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0], mousePosition = { x: 0, y: 0 } }) => {
+const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0] }) => {
   const textRef = useRef();
   
   useEffect(() => {
     const animateElement = () => {
       if (textRef.current) {
-        // Base rotation animation
         textRef.current.rotation.x += 0.005;
         textRef.current.rotation.y += 0.008;
-        
-        // Floating animation
         textRef.current.position.y += Math.sin(Date.now() * 0.001 + position[0]) * 0.03;
-        
-        // Mouse interaction - symbols lean towards cursor
-        const mouseInfluence = 0.3;
-        textRef.current.rotation.z = Math.sin(Date.now() * 0.002) * 0.1 + mousePosition.x * mouseInfluence * 0.2;
-        textRef.current.position.x = position[0] + mousePosition.x * mouseInfluence;
-        textRef.current.position.z = position[2] + mousePosition.y * mouseInfluence * 0.5;
       }
     };
     
     const interval = setInterval(animateElement, 16);
     return () => clearInterval(interval);
-  }, [position, mousePosition]);
+  }, [position]);
 
   return (
     <Float speed={1.5} rotationIntensity={0.8} floatIntensity={1.5}>
@@ -189,7 +182,7 @@ const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0], mo
           metalness={0.1}
           roughness={0.3}
           emissive={color}
-          emissiveIntensity={mousePosition.x !== 0 || mousePosition.y !== 0 ? 0.2 : 0.1}
+          emissiveIntensity={0.1}
         />
       </Text3D>
     </Float>
@@ -198,19 +191,6 @@ const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0], mo
 
 // 3D Scene Component
 const MathematicalScene = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      const x = (event.clientX / window.innerWidth) * 2 - 1;
-      const y = -(event.clientY / window.innerHeight) * 2 + 1;
-      setMousePosition({ x, y });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   return (
     <Canvas
       camera={{ position: [0, 0, 10], fov: 75 }}
@@ -226,24 +206,21 @@ const MathematicalScene = () => {
         color="#ff6b6b" 
         symbol="π" 
         rotation={[0.2, 0, 0.1]}
-        mousePosition={mousePosition}
       />
       <FloatingMathElement 
         position={[4, -1, 1]} 
         color="#4ecdc4" 
         symbol="e" 
         rotation={[-0.1, 0.3, 0]}
-        mousePosition={mousePosition}
       />
       <FloatingMathElement 
         position={[-1, 3, -2]} 
         color="#45b7d1" 
         symbol="i" 
         rotation={[0.1, -0.2, 0.3]}
-        mousePosition={mousePosition}
       />
       
-      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.3} />
+      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
     </Canvas>
   );
 };
@@ -795,6 +772,65 @@ const ContactSection = () => {
               <div>
                 <div className="text-white font-semibold group-hover:text-purple-300 transition-colors">Location</div>
                 <div className="text-gray-400 group-hover:text-gray-300 transition-colors">MIT, Cambridge, MA</div>
+              </div>
+            </motion.div>
+            
+            {/* Social Media Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mt-12 pt-8 border-t border-white/10"
+            >
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-semibold text-white mb-2">Connect With Me</h3>
+                <p className="text-gray-400 text-sm">Follow my mathematical journey</p>
+              </div>
+              
+              <div className="flex justify-center space-x-6">
+                <motion.a
+                  href="https://github.com/Valorant-rocks"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-4 bg-white/5 backdrop-blur-sm rounded-full border border-white/10 hover:border-gray-400/50 hover:bg-white/10 transition-all duration-300 group"
+                >
+                  <Github size={24} className="text-gray-400 group-hover:text-white transition-colors" />
+                </motion.a>
+                
+                <motion.a
+                  href="https://youtube.com/@adishuprety"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-4 bg-white/5 backdrop-blur-sm rounded-full border border-white/10 hover:border-red-400/50 hover:bg-white/10 transition-all duration-300 group"
+                >
+                  <Youtube size={24} className="text-gray-400 group-hover:text-red-400 transition-colors" />
+                </motion.a>
+                
+                <motion.a
+                  href="https://linkedin.com/in/adishuprety"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-4 bg-white/5 backdrop-blur-sm rounded-full border border-white/10 hover:border-blue-400/50 hover:bg-white/10 transition-all duration-300 group"
+                >
+                  <Linkedin size={24} className="text-gray-400 group-hover:text-blue-400 transition-colors" />
+                </motion.a>
+                
+                <motion.a
+                  href="https://facebook.com/adishuprety"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-4 bg-white/5 backdrop-blur-sm rounded-full border border-white/10 hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group"
+                >
+                  <Facebook size={24} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+                </motion.a>
               </div>
             </motion.div>
           </motion.div>
