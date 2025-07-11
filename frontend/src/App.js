@@ -142,21 +142,30 @@ const Navigation = () => {
 };
 
 // 3D Floating Mathematical Elements
-const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0] }) => {
+const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0], mousePosition = { x: 0, y: 0 } }) => {
   const textRef = useRef();
   
   useEffect(() => {
     const animateElement = () => {
       if (textRef.current) {
+        // Base rotation animation
         textRef.current.rotation.x += 0.005;
         textRef.current.rotation.y += 0.008;
+        
+        // Floating animation
         textRef.current.position.y += Math.sin(Date.now() * 0.001 + position[0]) * 0.03;
+        
+        // Mouse interaction - symbols lean towards cursor
+        const mouseInfluence = 0.3;
+        textRef.current.rotation.z = Math.sin(Date.now() * 0.002) * 0.1 + mousePosition.x * mouseInfluence * 0.2;
+        textRef.current.position.x = position[0] + mousePosition.x * mouseInfluence;
+        textRef.current.position.z = position[2] + mousePosition.y * mouseInfluence * 0.5;
       }
     };
     
     const interval = setInterval(animateElement, 16);
     return () => clearInterval(interval);
-  }, [position]);
+  }, [position, mousePosition]);
 
   return (
     <Float speed={1.5} rotationIntensity={0.8} floatIntensity={1.5}>
@@ -180,7 +189,7 @@ const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0] }) 
           metalness={0.1}
           roughness={0.3}
           emissive={color}
-          emissiveIntensity={0.1}
+          emissiveIntensity={mousePosition.x !== 0 || mousePosition.y !== 0 ? 0.2 : 0.1}
         />
       </Text3D>
     </Float>
@@ -189,6 +198,19 @@ const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0] }) 
 
 // 3D Scene Component
 const MathematicalScene = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (event) => {
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+      setMousePosition({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
     <Canvas
       camera={{ position: [0, 0, 10], fov: 75 }}
@@ -204,21 +226,24 @@ const MathematicalScene = () => {
         color="#ff6b6b" 
         symbol="π" 
         rotation={[0.2, 0, 0.1]}
+        mousePosition={mousePosition}
       />
       <FloatingMathElement 
         position={[4, -1, 1]} 
         color="#4ecdc4" 
         symbol="e" 
         rotation={[-0.1, 0.3, 0]}
+        mousePosition={mousePosition}
       />
       <FloatingMathElement 
         position={[-1, 3, -2]} 
         color="#45b7d1" 
         symbol="i" 
         rotation={[0.1, -0.2, 0.3]}
+        mousePosition={mousePosition}
       />
       
-      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.3} />
     </Canvas>
   );
 };
@@ -620,9 +645,13 @@ const AchievementsSection = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              className={`relative text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 cursor-pointer transition-all duration-500 group ${
-                hoveredCard === index ? 'transform scale-110 bg-white/10 border-purple-400/50 shadow-2xl z-10' : 'hover:border-white/20'
+              className={`relative text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 cursor-pointer transition-all duration-500 group hover:scale-110 ${
+                hoveredCard === index ? 'bg-white/10 border-purple-400/50 shadow-2xl z-10' : 'hover:border-white/20'
               }`}
+              style={{
+                transform: hoveredCard === index ? 'scale(1.15)' : 'scale(1)',
+                zIndex: hoveredCard === index ? 10 : 1
+              }}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
             >
