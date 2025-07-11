@@ -325,10 +325,61 @@ html {
 }
 
 .light body {
-  background-color: #f8fafc;
-  color: #1a202c;
+  background-color: #f8fafc !important;
+  color: #1a202c !important;
 }
 
+/* Light mode background gradients */
+.light #home {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 50%, #a0aec0 100%) !important;
+}
+
+.light #about {
+  background: #f7fafc !important;
+}
+
+.light #projects {
+  background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%) !important;
+}
+
+.light #achievements {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%) !important;
+}
+
+.light #contact {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%) !important;
+}
+
+/* Light mode text colors */
+.light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+  color: #1a202c !important;
+}
+
+.light p {
+  color: #4a5568 !important;
+}
+
+.light .text-white {
+  color: #1a202c !important;
+}
+
+.light .text-gray-300, .light .text-gray-400 {
+  color: #718096 !important;
+}
+
+.light .text-blue-300 {
+  color: #3182ce !important;
+}
+
+.light .text-purple-300 {
+  color: #805ad5 !important;
+}
+
+.light .text-cyan-300 {
+  color: #0987a0 !important;
+}
+
+/* Light mode mathematical background */
 .light .mathematical-background {
   background-image: 
     radial-gradient(circle at 20% 20%, rgba(66, 153, 225, 0.1) 0%, transparent 50%),
@@ -337,28 +388,45 @@ html {
 }
 
 .light .mathematical-background::after {
-  color: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.05) !important;
 }
 
-.light .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+/* Light mode glass cards */
+.light .glass-card, .light .bg-white\/5, .light .bg-white\/10 {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
 }
 
-.light .glass-card:hover {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+.light .glass-card:hover, .light .bg-white\/5:hover, .light .bg-white\/10:hover {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Light mode borders */
+.light .border-white\/10, .light .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Light mode scrollbar */
 .light ::-webkit-scrollbar-track {
-  background: #e2e8f0;
+  background: #e2e8f0 !important;
 }
 
 .light .gradient-text {
-  background: linear-gradient(135deg, #4299e1 0%, #805ad5 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(135deg, #4299e1 0%, #805ad5 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Light mode particle system */
+.light .ParticleSystem {
+  color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Light mode quotes section - override the dark gradient */
+.light section:has(.Mathematical.Wisdom) {
+  background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%) !important;
 }

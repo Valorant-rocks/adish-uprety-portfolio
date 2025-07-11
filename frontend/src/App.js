@@ -32,7 +32,7 @@ import {
 import './App.css';
 
 // Particle System Component
-const ParticleSystem = () => {
+const ParticleSystem = ({ isDark }) => {
   const particles = [
     '∫', '∑', '∏', '∆', '∇', '∂', '∞', '≈', '≡', '±', '∀', '∃', '∈', '⊂', '⊆', '∪', '∩',
     'α', 'β', 'γ', 'δ', 'ε', 'θ', 'λ', 'μ', 'π', 'σ', 'φ', 'ψ', 'ω', '√', '∛', '∜'
@@ -83,7 +83,9 @@ const ParticleSystem = () => {
             repeatType: "reverse",
             ease: "linear"
           }}
-          className="absolute text-white/10 font-bold select-none"
+          className={`absolute font-bold select-none ${
+            isDark ? 'text-white/10' : 'text-gray-800/15'
+          }`}
           style={{
             fontSize: `${particle.size * 2}rem`,
             fontFamily: 'serif'
@@ -364,43 +366,6 @@ const HeroSection = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 1000], [0, -500]);
   
-  const mathematicalQuotes = [
-    {
-      quote: "Mathematics is the language with which God has written the universe.",
-      author: "Galileo Galilei"
-    },
-    {
-      quote: "Pure mathematics is, in its way, the poetry of logical ideas.",
-      author: "Albert Einstein"
-    },
-    {
-      quote: "Mathematics knows no races or geographic boundaries; for mathematics, the cultural world is one country.",
-      author: "David Hilbert"
-    },
-    {
-      quote: "In mathematics, the art of proposing a question must be held of higher value than solving it.",
-      author: "Georg Cantor"
-    },
-    {
-      quote: "Mathematics is not about numbers, equations, computations, or algorithms: it is about understanding.",
-      author: "William Paul Thurston"
-    },
-    {
-      quote: "The essence of mathematics lies in its freedom.",
-      author: "Georg Cantor"
-    }
-  ];
-
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentQuoteIndex((prev) => (prev + 1) % mathematicalQuotes.length);
-    }, 4000); // Change quote every 4 seconds
-
-    return () => clearInterval(interval);
-  }, [mathematicalQuotes.length]);
-  
   return (
     <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
       {/* Mathematical Background Pattern */}
@@ -479,30 +444,6 @@ const HeroSection = () => {
         </div>
       </motion.div>
       
-      {/* Mathematical Quote */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 3.5 }}
-        className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-20 max-w-2xl px-4"
-      >
-        <motion.div
-          key={currentQuoteIndex}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.8 }}
-          className="text-center bg-black/20 backdrop-blur-sm rounded-lg p-6 border border-white/10"
-        >
-          <p className="text-white/90 text-sm md:text-base italic mb-3 leading-relaxed">
-            "{mathematicalQuotes[currentQuoteIndex].quote}"
-          </p>
-          <p className="text-blue-300 text-xs md:text-sm font-semibold">
-            — {mathematicalQuotes[currentQuoteIndex].author}
-          </p>
-        </motion.div>
-      </motion.div>
-      
       {/* Scroll Indicator */}
       <motion.div 
         initial={{ opacity: 0 }}
@@ -515,6 +456,104 @@ const HeroSection = () => {
           <span className="text-sm">Scroll to explore</span>
         </div>
       </motion.div>
+    </section>
+  );
+};
+
+// Mathematical Quotes Component
+const MathematicalQuotes = () => {
+  const [ref, inView] = useInViewHook();
+  
+  const mathematicalQuotes = [
+    {
+      quote: "Mathematics is the language with which God has written the universe.",
+      author: "Galileo Galilei"
+    },
+    {
+      quote: "Pure mathematics is, in its way, the poetry of logical ideas.",
+      author: "Albert Einstein"
+    },
+    {
+      quote: "Mathematics knows no races or geographic boundaries; for mathematics, the cultural world is one country.",
+      author: "David Hilbert"
+    },
+    {
+      quote: "In mathematics, the art of proposing a question must be held of higher value than solving it.",
+      author: "Georg Cantor"
+    },
+    {
+      quote: "Mathematics is not about numbers, equations, computations, or algorithms: it is about understanding.",
+      author: "William Paul Thurston"
+    },
+    {
+      quote: "The essence of mathematics lies in its freedom.",
+      author: "Georg Cantor"
+    }
+  ];
+
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentQuoteIndex((prev) => (prev + 1) % mathematicalQuotes.length);
+    }, 4000); // Change quote every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [mathematicalQuotes.length]);
+
+  return (
+    <section ref={ref} className="py-16 px-4 bg-gradient-to-br from-indigo-900 to-purple-900">
+      <div className="max-w-4xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Mathematical <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Wisdom</span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto rounded-full"></div>
+        </motion.div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative max-w-3xl mx-auto"
+        >
+          <motion.div
+            key={currentQuoteIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.8 }}
+            className="text-center bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl"
+          >
+            <blockquote className="text-white text-lg md:text-xl italic mb-6 leading-relaxed">
+              "{mathematicalQuotes[currentQuoteIndex].quote}"
+            </blockquote>
+            <cite className="text-cyan-300 text-base md:text-lg font-semibold">
+              — {mathematicalQuotes[currentQuoteIndex].author}
+            </cite>
+          </motion.div>
+          
+          {/* Quote Navigation Dots */}
+          <div className="flex justify-center mt-6 space-x-2">
+            {mathematicalQuotes.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentQuoteIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentQuoteIndex
+                    ? 'bg-cyan-400 scale-125'
+                    : 'bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };
@@ -1018,12 +1057,24 @@ function App() {
     setIsDark(!isDark);
   };
 
+  useEffect(() => {
+    // Apply theme to body element
+    if (isDark) {
+      document.body.classList.remove('light');
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+      document.body.classList.add('light');
+    }
+  }, [isDark]);
+
   return (
     <div className={`App ${isDark ? 'dark' : 'light'}`}>
-      <ParticleSystem />
+      <ParticleSystem isDark={isDark} />
       <Navigation isDark={isDark} toggleTheme={toggleTheme} />
       <HeroSection />
       <AboutSection />
+      <MathematicalQuotes />
       <ProjectsSection />
       <AchievementsSection />
       <ContactSection />
