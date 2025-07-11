@@ -320,7 +320,7 @@ const AboutSection = () => {
 
 // Projects Section Component
 const ProjectsSection = () => {
-  const [ref, inView] = useIntersection();
+  const [ref, inView] = useInViewHook();
   
   const projects = [
     {
