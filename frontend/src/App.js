@@ -239,7 +239,7 @@ const HeroSection = () => {
 
 // About Section Component
 const AboutSection = () => {
-  const [ref, inView] = useIntersection();
+  const [ref, inView] = useInViewHook();
   
   return (
     <section ref={ref} className="py-20 px-4 bg-gray-900 relative overflow-hidden">
