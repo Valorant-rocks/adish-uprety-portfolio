@@ -83,31 +83,11 @@ const Navigation = () => {
               <span className="text-white font-bold text-lg">A</span>
             </div>
             <span className="text-white font-bold text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Dr. Alex Chen
+              Adish Uprety
             </span>
           </motion.div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item, index) => (
-              <motion.button
-                key={item.name}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => scrollToSection(item.href)}
-                className="group relative flex items-center space-x-2 text-white/80 hover:text-white transition-colors duration-200"
-              >
-                <span className="text-blue-400 group-hover:text-blue-300 transition-colors">
-                  {item.icon}
-                </span>
-                <span className="font-medium">{item.name}</span>
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></div>
-              </motion.button>
-            ))}
-          </div>
+
 
           {/* Mobile menu button */}
           <motion.button
@@ -301,7 +281,7 @@ const HeroSection = () => {
             transition={{ duration: 1, delay: 0.5 }}
             className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent"
           >
-            Dr. Alex Chen
+            Adish Uprety
           </motion.h1>
           
           <motion.div 
@@ -410,7 +390,7 @@ const AboutSection = () => {
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
               <img 
                 src="https://images.unsplash.com/photo-1511629091441-ee46146481b6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwyfHxtYXRoZW1hdGljaWFuJTIwaGVhZHNob3R8ZW58MHx8fHwxNzUyMjEyNzQ3fDA&ixlib=rb-4.1.0&q=85"
-                alt="Dr. Alex Chen"
+                alt="Adish Uprety"
                 className="relative rounded-lg shadow-2xl w-full max-w-md mx-auto transform group-hover:scale-105 transition duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
@@ -424,7 +404,7 @@ const AboutSection = () => {
             className="text-white space-y-6"
           >
             <p className="text-lg leading-relaxed text-gray-300">
-              Welcome to my mathematical universe! I'm Dr. Alex Chen, a passionate researcher dedicated to exploring the elegant patterns and infinite possibilities within mathematics. With over a decade of experience in mathematical research and 3D visualization, I bridge the gap between abstract mathematical concepts and stunning visual representations.
+              Welcome to my mathematical universe! I'm Adish Uprety, a passionate researcher dedicated to exploring the elegant patterns and infinite possibilities within mathematics. With over a decade of experience in mathematical research and 3D visualization, I bridge the gap between abstract mathematical concepts and stunning visual representations.
             </p>
             
             <p className="text-lg leading-relaxed text-gray-300">
@@ -759,13 +739,13 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center">
           <div className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Dr. Alex Chen
+            Adish Uprety
           </div>
           <div className="text-gray-400 mb-6">
             Mathematical Researcher & 3D Visualization Expert
           </div>
           <div className="text-sm text-gray-500">
-            © 2025 Dr. Alex Chen. All rights reserved.
+            © 2025 Adish Uprety. All rights reserved.
           </div>
         </div>
       </div>
