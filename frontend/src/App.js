@@ -16,9 +16,142 @@ import {
   ExternalLink,
   Download,
   ChevronRight,
-  MousePointer
+  MousePointer,
+  Menu,
+  X,
+  Home,
+  User,
+  Briefcase,
+  Trophy,
+  MessageCircle
 } from 'lucide-react';
 import './App.css';
+
+// Navigation Component
+const Navigation = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+  
+  useEffect(() => {
+    const updateScrolled = () => {
+      const isScrolled = window.scrollY > 50;
+      setScrolled(isScrolled);
+    };
+    
+    window.addEventListener('scroll', updateScrolled);
+    updateScrolled();
+    
+    return () => window.removeEventListener('scroll', updateScrolled);
+  }, []);
+
+  const navItems = [
+    { name: 'Home', icon: <Home size={18} />, href: '#home' },
+    { name: 'About', icon: <User size={18} />, href: '#about' },
+    { name: 'Projects', icon: <Briefcase size={18} />, href: '#projects' },
+    { name: 'Achievements', icon: <Trophy size={18} />, href: '#achievements' },
+    { name: 'Contact', icon: <MessageCircle size={18} />, href: '#contact' }
+  ];
+
+  const scrollToSection = (href) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsOpen(false);
+  };
+
+  return (
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? 'bg-black/80 backdrop-blur-md border-b border-white/10' 
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center space-x-2"
+          >
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">A</span>
+            </div>
+            <span className="text-white font-bold text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Dr. Alex Chen
+            </span>
+          </motion.div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item, index) => (
+              <motion.button
+                key={item.name}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => scrollToSection(item.href)}
+                className="group relative flex items-center space-x-2 text-white/80 hover:text-white transition-colors duration-200"
+              >
+                <span className="text-blue-400 group-hover:text-blue-300 transition-colors">
+                  {item.icon}
+                </span>
+                <span className="font-medium">{item.name}</span>
+                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></div>
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Mobile menu button */}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ 
+          opacity: isOpen ? 1 : 0, 
+          height: isOpen ? 'auto' : 0 
+        }}
+        transition={{ duration: 0.3 }}
+        className="md:hidden bg-black/90 backdrop-blur-md border-t border-white/10"
+      >
+        <div className="px-4 py-4 space-y-3">
+          {navItems.map((item, index) => (
+            <motion.button
+              key={item.name}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => scrollToSection(item.href)}
+              className="flex items-center space-x-3 text-white/80 hover:text-white hover:bg-white/10 p-3 rounded-lg transition-all duration-200 w-full"
+            >
+              <span className="text-blue-400">{item.icon}</span>
+              <span className="font-medium">{item.name}</span>
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+    </motion.nav>
+  );
+};
 
 // 3D Floating Mathematical Elements
 const FloatingMathElement = ({ position, color, symbol, rotation = [0, 0, 0] }) => {
