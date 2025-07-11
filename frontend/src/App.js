@@ -376,7 +376,7 @@ const AboutSection = () => {
   const [ref, inView] = useInViewHook();
   
   return (
-    <section ref={ref} className="py-20 px-4 bg-gray-900 relative overflow-hidden">
+    <section id="about" ref={ref} className="py-20 px-4 bg-gray-900 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="grid grid-cols-12 gap-4 h-full">
