@@ -810,7 +810,7 @@ const AchievementsSection = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              className={`relative text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 cursor-pointer transition-all duration-500 group hover:scale-110 ${
+              className={`relative text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 cursor-pointer transition-all duration-500 group hover:scale-110 min-h-[280px] ${
                 hoveredCard === index ? 'bg-white/10 border-purple-400/50 shadow-2xl z-10' : 'hover:border-white/20'
               }`}
               style={{
@@ -837,51 +837,63 @@ const AchievementsSection = () => {
               </div>
 
               {/* Hover Details */}
-              <div className={`absolute inset-0 p-4 transition-all duration-500 ${
+              <div className={`absolute inset-0 p-3 transition-all duration-500 overflow-hidden ${
                 hoveredCard === index ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
               }`}>
-                <div className="text-purple-400 mb-3 flex justify-center">
-                  {achievement.icon}
-                </div>
-                <div className="text-lg font-bold text-white mb-3">{achievement.title} Details</div>
-                
-                <div className="text-xs text-gray-300 space-y-2">
-                  {achievement.details.examples.map((example, idx) => (
-                    <div key={idx} className="flex items-center">
-                      <div className="w-1 h-1 bg-purple-400 rounded-full mr-2"></div>
-                      <span>{example}</span>
-                    </div>
-                  ))}
+                <div className="h-full flex flex-col">
+                  <div className="text-purple-400 mb-2 flex justify-center">
+                    {achievement.icon}
+                  </div>
+                  <div className="text-sm font-bold text-white mb-2 text-center">{achievement.title}</div>
                   
-                  {achievement.details.journals && (
-                    <div className="mt-3 pt-2 border-t border-white/10">
-                      <div className="text-purple-300 font-semibold text-xs">Featured in:</div>
-                      {achievement.details.journals.map((journal, idx) => (
-                        <div key={idx} className="text-xs text-gray-400">{journal}</div>
+                  <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-400/30 scrollbar-track-transparent pr-1">
+                    <div className="text-xs text-gray-300 space-y-1.5">
+                      {achievement.details.examples.slice(0, 2).map((example, idx) => (
+                        <div key={idx} className="flex items-start">
+                          <div className="w-1 h-1 bg-purple-400 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                          <span className="leading-tight">{example}</span>
+                        </div>
                       ))}
-                    </div>
-                  )}
-                  
-                  {achievement.details.impact && (
-                    <div className="mt-2 text-xs text-purple-300 font-semibold">
-                      {achievement.details.impact}
-                    </div>
-                  )}
-                  
-                  {achievement.details.publishers && (
-                    <div className="mt-3 pt-2 border-t border-white/10">
-                      <div className="text-purple-300 font-semibold text-xs">Publishers:</div>
-                      {achievement.details.publishers.map((pub, idx) => (
-                        <div key={idx} className="text-xs text-gray-400">{pub}</div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {achievement.details.locations && (
-                    <div className="mt-2 text-xs text-purple-300">
-                      Locations: {achievement.details.locations.join(", ")}
-                    </div>
-                  )}
+                      
+                      {achievement.details.journals && (
+                        <div className="mt-2 pt-1 border-t border-white/10">
+                          <div className="text-purple-300 font-semibold text-xs mb-1">Featured in:</div>
+                          <div className="text-xs text-gray-400 leading-tight">
+                            {achievement.details.journals.slice(0, 2).join(", ")}
+                            {achievement.details.journals.length > 2 && "..."}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {achievement.details.impact && (
+                        <div className="mt-1 text-xs text-purple-300 font-semibold leading-tight">
+                          {achievement.details.impact}
+                        </div>
+                      )}
+                      
+                      {achievement.details.publishers && (
+                        <div className="mt-2 pt-1 border-t border-white/10">
+                          <div className="text-purple-300 font-semibold text-xs mb-1">Publishers:</div>
+                          <div className="text-xs text-gray-400 leading-tight">
+                            {achievement.details.publishers.slice(0, 2).join(", ")}
+                            {achievement.details.publishers.length > 2 && "..."}
+                          </div>
+                        </div>
+                      )}
+                      
+                                             {achievement.details.locations && (
+                         <div className="mt-1 text-xs text-purple-300 leading-tight">
+                           {achievement.details.locations.slice(0, 3).join(", ")}
+                           {achievement.details.locations.length > 3 && "..."}
+                         </div>
+                       )}
+                       
+                       {/* Scroll hint */}
+                       <div className="mt-2 text-center">
+                         <div className="text-purple-400/50 text-xs">••••</div>
+                       </div>
+                     </div>
+                   </div>
                 </div>
               </div>
             </motion.div>
