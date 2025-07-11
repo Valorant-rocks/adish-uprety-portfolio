@@ -73,21 +73,29 @@ const Navigation = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-2"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">A</span>
-            </div>
-            <span className="text-white font-bold text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Adish Uprety
-            </span>
-          </motion.div>
+        <div className="flex items-center justify-center h-16">
 
-
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item, index) => (
+              <motion.button
+                key={item.name}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => scrollToSection(item.href)}
+                className="group relative flex items-center space-x-2 text-white/80 hover:text-white transition-colors duration-200"
+              >
+                <span className="text-blue-400 group-hover:text-blue-300 transition-colors">
+                  {item.icon}
+                </span>
+                <span className="font-medium">{item.name}</span>
+                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></div>
+              </motion.button>
+            ))}
+          </div>
 
           {/* Mobile menu button */}
           <motion.button
@@ -625,12 +633,12 @@ const ContactSection = () => {
           </p>
         </motion.div>
         
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className="flex justify-center">
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-8"
+            className="space-y-8 max-w-md"
           >
             <div className="flex items-center space-x-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
               <div className="text-blue-400">
@@ -661,70 +669,6 @@ const ContactSection = () => {
                 <div className="text-gray-400">MIT, Cambridge, MA</div>
               </div>
             </div>
-            
-            <div className="flex space-x-4 pt-4">
-              <motion.a 
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg text-white hover:from-blue-600 hover:to-blue-700 transition-all"
-              >
-                <Github size={24} />
-              </motion.a>
-              <motion.a 
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg text-white hover:from-blue-600 hover:to-blue-700 transition-all"
-              >
-                <Linkedin size={24} />
-              </motion.a>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10"
-          >
-            <form className="space-y-6">
-              <div>
-                <label className="block text-white text-sm font-semibold mb-2">Name</label>
-                <input 
-                  type="text"
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all"
-                  placeholder="Your name"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-white text-sm font-semibold mb-2">Email</label>
-                <input 
-                  type="email"
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-white text-sm font-semibold mb-2">Message</label>
-                <textarea 
-                  rows={4}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all resize-none"
-                  placeholder="Tell me about your mathematical interests..."
-                />
-              </div>
-              
-              <motion.button 
-                type="submit"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white font-semibold hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg"
-              >
-                Send Message
-              </motion.button>
-            </form>
           </motion.div>
         </div>
       </div>
