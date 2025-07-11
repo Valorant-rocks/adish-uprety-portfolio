@@ -431,21 +431,6 @@ const AboutSection = () => {
             <p className="text-lg leading-relaxed text-gray-300">
               My work focuses on complex mathematical modeling, computational geometry, and creating immersive 3D visualizations that make mathematics accessible and beautiful. I believe that mathematics is not just about numbers—it's about discovering the hidden patterns that govern our universe.
             </p>
-            
-            <div className="grid grid-cols-2 gap-6 pt-6">
-              <div className="text-center p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
-                <div className="text-3xl font-bold text-blue-400 mb-2">
-                  <AnimatedCounter end={15} suffix="+" />
-                </div>
-                <div className="text-sm text-gray-400">Years Experience</div>
-              </div>
-              <div className="text-center p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
-                <div className="text-3xl font-bold text-purple-400 mb-2">
-                  <AnimatedCounter end={89} suffix="+" />
-                </div>
-                <div className="text-sm text-gray-400">Published Papers</div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>
@@ -552,31 +537,64 @@ const ProjectsSection = () => {
 // Achievements Section Component
 const AchievementsSection = () => {
   const [ref, inView] = useInViewHook();
+  const [hoveredCard, setHoveredCard] = useState(null);
   
   const achievements = [
     {
       icon: <Award className="w-8 h-8" />,
       title: "Publications",
       count: 89,
-      description: "Peer-reviewed research papers"
+      description: "Peer-reviewed research papers",
+      details: {
+        examples: [
+          "Advanced Topology in 3D Space",
+          "Mathematical Modeling of Complex Systems",
+          "Geometric Algorithms for Visualization"
+        ],
+        journals: ["Nature Mathematics", "Journal of Computational Geometry", "Mathematical Quarterly"]
+      }
     },
     {
       icon: <Users className="w-8 h-8" />,
       title: "Citations",
       count: 1247,
-      description: "Academic citations worldwide"
+      description: "Academic citations worldwide",
+      details: {
+        examples: [
+          "Cited in MIT Advanced Mathematics",
+          "Referenced in 15+ doctoral dissertations",
+          "Featured in top mathematical journals"
+        ],
+        impact: "H-index: 23, i10-index: 45"
+      }
     },
     {
       icon: <BookOpen className="w-8 h-8" />,
       title: "Books",
       count: 3,
-      description: "Mathematical textbooks authored"
+      description: "Mathematical textbooks authored",
+      details: {
+        examples: [
+          "Introduction to Complex Analysis",
+          "3D Visualization in Mathematics",
+          "Modern Geometric Theory"
+        ],
+        publishers: ["Academic Press", "MIT Press", "Springer"]
+      }
     },
     {
       icon: <Calendar className="w-8 h-8" />,
       title: "Conferences",
       count: 42,
-      description: "International speaking engagements"
+      description: "International speaking engagements",
+      details: {
+        examples: [
+          "International Congress of Mathematicians",
+          "SIGGRAPH Mathematics & Visualization",
+          "European Mathematical Society Conference"
+        ],
+        locations: ["USA", "Europe", "Asia", "Australia"]
+      }
     }
   ];
   
@@ -602,19 +620,75 @@ const AchievementsSection = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 group"
+              className={`relative text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 cursor-pointer transition-all duration-500 group ${
+                hoveredCard === index ? 'transform scale-110 bg-white/10 border-purple-400/50 shadow-2xl z-10' : 'hover:border-white/20'
+              }`}
+              onMouseEnter={() => setHoveredCard(index)}
+              onMouseLeave={() => setHoveredCard(null)}
             >
-              <div className="text-purple-400 mb-4 flex justify-center group-hover:scale-110 transition-transform">
-                {achievement.icon}
+              {/* Default Content */}
+              <div className={`transition-all duration-500 ${hoveredCard === index ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                <div className="text-purple-400 mb-4 flex justify-center group-hover:scale-110 transition-transform">
+                  {achievement.icon}
+                </div>
+                <div className="text-4xl font-bold text-white mb-2">
+                  <AnimatedCounter end={achievement.count} suffix="+" />
+                </div>
+                <div className="text-xl font-semibold text-purple-300 mb-2">
+                  {achievement.title}
+                </div>
+                <div className="text-gray-400 text-sm">
+                  {achievement.description}
+                </div>
               </div>
-              <div className="text-4xl font-bold text-white mb-2">
-                <AnimatedCounter end={achievement.count} suffix="+" />
-              </div>
-              <div className="text-xl font-semibold text-purple-300 mb-2">
-                {achievement.title}
-              </div>
-              <div className="text-gray-400 text-sm">
-                {achievement.description}
+
+              {/* Hover Details */}
+              <div className={`absolute inset-0 p-4 transition-all duration-500 ${
+                hoveredCard === index ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+              }`}>
+                <div className="text-purple-400 mb-3 flex justify-center">
+                  {achievement.icon}
+                </div>
+                <div className="text-lg font-bold text-white mb-3">{achievement.title} Details</div>
+                
+                <div className="text-xs text-gray-300 space-y-2">
+                  {achievement.details.examples.map((example, idx) => (
+                    <div key={idx} className="flex items-center">
+                      <div className="w-1 h-1 bg-purple-400 rounded-full mr-2"></div>
+                      <span>{example}</span>
+                    </div>
+                  ))}
+                  
+                  {achievement.details.journals && (
+                    <div className="mt-3 pt-2 border-t border-white/10">
+                      <div className="text-purple-300 font-semibold text-xs">Featured in:</div>
+                      {achievement.details.journals.map((journal, idx) => (
+                        <div key={idx} className="text-xs text-gray-400">{journal}</div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {achievement.details.impact && (
+                    <div className="mt-2 text-xs text-purple-300 font-semibold">
+                      {achievement.details.impact}
+                    </div>
+                  )}
+                  
+                  {achievement.details.publishers && (
+                    <div className="mt-3 pt-2 border-t border-white/10">
+                      <div className="text-purple-300 font-semibold text-xs">Publishers:</div>
+                      {achievement.details.publishers.map((pub, idx) => (
+                        <div key={idx} className="text-xs text-gray-400">{pub}</div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {achievement.details.locations && (
+                    <div className="mt-2 text-xs text-purple-300">
+                      Locations: {achievement.details.locations.join(", ")}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}
@@ -653,35 +727,47 @@ const ContactSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-8 max-w-md"
           >
-            <div className="flex items-center space-x-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-              <div className="text-blue-400">
+            <motion.div 
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center space-x-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 hover:border-blue-400/50 hover:bg-white/10 transition-all duration-300 cursor-pointer group"
+            >
+              <div className="text-blue-400 group-hover:scale-110 transition-transform duration-300">
                 <Mail size={24} />
               </div>
               <div>
-                <div className="text-white font-semibold">Email</div>
-                <div className="text-gray-400">alex.chen@mathematics.edu</div>
+                <div className="text-white font-semibold group-hover:text-blue-300 transition-colors">Email</div>
+                <div className="text-gray-400 group-hover:text-gray-300 transition-colors">alex.chen@mathematics.edu</div>
               </div>
-            </div>
+            </motion.div>
             
-            <div className="flex items-center space-x-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-              <div className="text-green-400">
+            <motion.div 
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center space-x-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 hover:border-green-400/50 hover:bg-white/10 transition-all duration-300 cursor-pointer group"
+            >
+              <div className="text-green-400 group-hover:scale-110 transition-transform duration-300">
                 <Phone size={24} />
               </div>
               <div>
-                <div className="text-white font-semibold">Phone</div>
-                <div className="text-gray-400">+1 (555) 123-4567</div>
+                <div className="text-white font-semibold group-hover:text-green-300 transition-colors">Phone</div>
+                <div className="text-gray-400 group-hover:text-gray-300 transition-colors">+1 (555) 123-4567</div>
               </div>
-            </div>
+            </motion.div>
             
-            <div className="flex items-center space-x-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-              <div className="text-purple-400">
+            <motion.div 
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center space-x-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 hover:border-purple-400/50 hover:bg-white/10 transition-all duration-300 cursor-pointer group"
+            >
+              <div className="text-purple-400 group-hover:scale-110 transition-transform duration-300">
                 <MapPin size={24} />
               </div>
               <div>
-                <div className="text-white font-semibold">Location</div>
-                <div className="text-gray-400">MIT, Cambridge, MA</div>
+                <div className="text-white font-semibold group-hover:text-purple-300 transition-colors">Location</div>
+                <div className="text-gray-400 group-hover:text-gray-300 transition-colors">MIT, Cambridge, MA</div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
@@ -696,13 +782,13 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center">
           <div className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Dr. Alex Chen
+            Adish Uprety
           </div>
           <div className="text-gray-400 mb-6">
             Mathematical Researcher & 3D Visualization Expert
           </div>
           <div className="text-sm text-gray-500">
-            © 2025 Dr. Alex Chen. All rights reserved.
+            © 2025 Adish Uprety. All rights reserved.
           </div>
         </div>
       </div>
