@@ -92,7 +92,7 @@ const MathematicalScene = () => {
 // Animated Counter Component
 const AnimatedCounter = ({ end, duration = 2000, suffix = "" }) => {
   const [count, setCount] = useState(0);
-  const [ref, inView] = useIntersection();
+  const [ref, inView] = useInViewHook();
 
   useEffect(() => {
     if (inView) {
