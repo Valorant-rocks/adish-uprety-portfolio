@@ -484,7 +484,7 @@ const ProjectsSection = () => {
   ];
   
   return (
-    <section ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
+    <section id="projects" ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
       <div className="max-w-6xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
