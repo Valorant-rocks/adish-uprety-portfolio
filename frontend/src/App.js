@@ -628,7 +628,7 @@ const ContactSection = () => {
   const [ref, inView] = useInViewHook();
   
   return (
-    <section ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
+    <section id="contact" ref={ref} className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
       <div className="max-w-4xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
