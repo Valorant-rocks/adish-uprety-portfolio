@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useInView as useInViewHook } from 'react-intersection-observer';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Text, Float, MeshDistortMaterial } from '@react-three/drei';
 import { 
   Mail, Phone, MapPin, Github, Linkedin, Youtube, Facebook,
   Award, BookOpen, Users, Calendar, ExternalLink, Download,
@@ -9,14 +11,15 @@ import {
 } from 'lucide-react';
 import './App.css';
 
-// Ultra Performance Settings - Everything optimized for 60fps
+// Ultra Performance Settings - Everything optimized for 60fps with 3D mathematical elements
 const ULTRA_PERFORMANCE_CONFIG = {
   enableParticles: false,
-  enable3D: false,
+  enable3D: true, // Enabled for mathematical floating elements
   enableParallax: false,
   enableComplexAnimations: false,
   useSimpleTransitions: true,
-  reduceMotion: true
+  reduceMotion: true,
+  enableMathElements: true // New flag for mathematical 3D elements
 };
 
 // Static CSS-only background (no JavaScript animations)
@@ -30,6 +33,124 @@ const StaticBackground = () => (
     }}></div>
   </div>
 );
+
+// Individual floating mathematical element component
+const FloatingMathElement = ({ position, text, color = "#4F46E5", size = 1 }) => {
+  const meshRef = useRef();
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.3;
+      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.4 + position[0]) * 0.5;
+    }
+  });
+
+  return (
+    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
+      <Text
+        ref={meshRef}
+        position={position}
+        fontSize={size}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+        material-transparent
+        material-opacity={0.6}
+        fontWeight="500"
+        fontFamily="serif"
+      >
+        {text}
+      </Text>
+    </Float>
+  );
+};
+
+// CSS Fallback for mathematical elements (when 3D doesn't load)
+const MathElementsFallback = () => {
+  const mathElements = [
+    { text: "π", style: { top: "20%", left: "15%", color: "#3B82F6" } },
+    { text: "∫", style: { top: "30%", right: "10%", color: "#8B5CF6" } },
+    { text: "e", style: { bottom: "40%", left: "20%", color: "#10B981" } },
+    { text: "∞", style: { top: "60%", right: "15%", color: "#F59E0B" } },
+    { text: "i", style: { top: "15%", left: "70%", color: "#EF4444" } },
+    { text: "∂", style: { top: "45%", right: "25%", color: "#6366F1" } },
+    { text: "Σ", style: { bottom: "60%", left: "10%", color: "#14B8A6" } },
+    { text: "√", style: { bottom: "20%", right: "20%", color: "#F97316" } }
+  ];
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+      {mathElements.map((element, index) => (
+        <div
+          key={index}
+          className="absolute text-4xl md:text-6xl math-symbol-3d opacity-30 floating"
+          style={{
+            ...element.style,
+            color: element.style.color,
+            animationDelay: `${index * 0.5}s`,
+            animationDuration: `${3 + index * 0.3}s`
+          }}
+        >
+          {element.text}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// 3D Mathematical elements floating in background
+const FloatingMathElements = () => {
+  const [use3D, setUse3D] = useState(true);
+  const mathElements = [
+    { text: "π", position: [-8, 3, -5], color: "#3B82F6", size: 2 },
+    { text: "∫", position: [8, 1, -4], color: "#8B5CF6", size: 2.5 },
+    { text: "e", position: [-6, -2, -6], color: "#10B981", size: 1.8 },
+    { text: "∞", position: [7, -1, -5], color: "#F59E0B", size: 2 },
+    { text: "i", position: [-4, 4, -7], color: "#EF4444", size: 1.5 },
+    { text: "∂", position: [5, 3, -6], color: "#6366F1", size: 2 },
+    { text: "Σ", position: [-7, 0, -4], color: "#14B8A6", size: 2.2 },
+    { text: "√", position: [6, -3, -5], color: "#F97316", size: 1.8 },
+    { text: "∆", position: [-3, -1, -8], color: "#A855F7", size: 1.6 },
+    { text: "φ", position: [4, 0, -7], color: "#059669", size: 1.7 },
+    { text: "λ", position: [-5, 2, -5], color: "#DC2626", size: 1.5 },
+    { text: "∇", position: [3, 2, -6], color: "#7C3AED", size: 1.9 }
+  ];
+
+  // Fallback to CSS animation if 3D fails
+  const handleError = () => {
+    setUse3D(false);
+  };
+
+  if (!use3D || !ULTRA_PERFORMANCE_CONFIG.enable3D) {
+    return <MathElementsFallback />;
+  }
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-10 math-3d-container">
+      <Canvas 
+        camera={{ position: [0, 0, 5], fov: 75 }}
+        onError={handleError}
+        dpr={[1, 2]}
+        performance={{ min: 0.5 }}
+      >
+        <Suspense fallback={<MathElementsFallback />}>
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} intensity={0.8} />
+          {mathElements.map((element, index) => (
+            <FloatingMathElement
+              key={index}
+              position={element.position}
+              text={element.text}
+              color={element.color}
+              size={element.size}
+            />
+          ))}
+        </Suspense>
+      </Canvas>
+    </div>
+  );
+};
 
 // Ultra-lightweight navigation
 const UltraLightNavigation = ({ isDark, toggleTheme }) => {
@@ -123,22 +244,45 @@ const InstantCounter = ({ end, suffix = "" }) => {
 // No typewriter effect - instant text display
 const InstantText = ({ text }) => <span>{text}</span>;
 
-// Ultra-light hero section
+// Ultra-light hero section with 3D floating elements
 const UltraLightHero = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <StaticBackground />
+      <FloatingMathElements />
       
       {/* Content */}
       <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4 pt-14">
-        <motion.h1 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent"
+          className="relative"
         >
-          Adish Uprety
-        </motion.h1>
+          {/* Fixed name with proper spacing and no clipping */}
+          <h1 className="hero-name text-4xl md:text-7xl lg:text-8xl font-bold mb-6 relative inline-block gpu-accelerated">
+            {/* Background gradient text with glow */}
+            <span 
+              className="absolute inset-0 gradient-text-enhanced blur-sm math-glow"
+              style={{ transform: 'scale(1.02)' }}
+              aria-hidden="true"
+            >
+              Adish Uprety
+            </span>
+            {/* Main gradient text */}
+            <span className="relative gradient-text-enhanced font-extrabold tracking-wide">
+              Adish Uprety
+            </span>
+            {/* Additional glow effect */}
+            <span 
+              className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-green-400/20 blur-lg"
+              style={{ transform: 'scale(1.1)' }}
+              aria-hidden="true"
+            >
+              Adish Uprety
+            </span>
+          </h1>
+        </motion.div>
         
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
@@ -180,7 +324,7 @@ const UltraLightHero = () => {
       </div>
       
       {/* Simple scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 z-20">
         <MousePointer size={20} className="animate-bounce" />
       </div>
     </section>
