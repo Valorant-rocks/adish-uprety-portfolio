@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useInView as useInViewHook } from 'react-intersection-observer';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Text, Float, MeshDistortMaterial } from '@react-three/drei';
+import { Text, Float } from '@react-three/drei';
 import { 
   Mail, Phone, MapPin, Github, Linkedin, Youtube, Facebook,
   Award, BookOpen, Users, Calendar, ExternalLink, Download,
@@ -34,6 +34,32 @@ const StaticBackground = () => (
   </div>
 );
 
+// Error boundary for 3D components
+class ThreeErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.warn('Three.js error caught by boundary:', error, errorInfo);
+    if (this.props.onError) {
+      this.props.onError(error);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || null;
+    }
+    return this.props.children;
+  }
+}
+
 // Individual floating mathematical element component
 const FloatingMathElement = ({ position, text, color = "#4F46E5", size = 1 }) => {
   const meshRef = useRef();
@@ -58,7 +84,6 @@ const FloatingMathElement = ({ position, text, color = "#4F46E5", size = 1 }) =>
         material-transparent
         material-opacity={0.6}
         fontWeight="500"
-        fontFamily="serif"
       >
         {text}
       </Text>
@@ -99,9 +124,28 @@ const MathElementsFallback = () => {
   );
 };
 
+// 3D Scene content (only Three.js objects)
+const MathScene = ({ mathElements }) => (
+  <>
+    <ambientLight intensity={0.5} />
+    <pointLight position={[10, 10, 10]} intensity={0.8} />
+    {mathElements.map((element, index) => (
+      <FloatingMathElement
+        key={index}
+        position={element.position}
+        text={element.text}
+        color={element.color}
+        size={element.size}
+      />
+    ))}
+  </>
+);
+
 // 3D Mathematical elements floating in background
 const FloatingMathElements = () => {
   const [use3D, setUse3D] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  
   const mathElements = [
     { text: "π", position: [-8, 3, -5], color: "#3B82F6", size: 2 },
     { text: "∫", position: [8, 1, -4], color: "#8B5CF6", size: 2.5 },
@@ -118,36 +162,40 @@ const FloatingMathElements = () => {
   ];
 
   // Fallback to CSS animation if 3D fails
-  const handleError = () => {
+  const handleError = (error) => {
+    console.warn('3D canvas error, falling back to CSS animations:', error);
+    setHasError(true);
     setUse3D(false);
   };
 
-  if (!use3D || !ULTRA_PERFORMANCE_CONFIG.enable3D) {
+  // Use CSS fallback if 3D is disabled or has errors
+  if (!use3D || !ULTRA_PERFORMANCE_CONFIG.enable3D || hasError) {
     return <MathElementsFallback />;
   }
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10 math-3d-container">
-      <Canvas 
-        camera={{ position: [0, 0, 5], fov: 75 }}
-        onError={handleError}
-        dpr={[1, 2]}
-        performance={{ min: 0.5 }}
-      >
-        <Suspense fallback={<MathElementsFallback />}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={0.8} />
-          {mathElements.map((element, index) => (
-            <FloatingMathElement
-              key={index}
-              position={element.position}
-              text={element.text}
-              color={element.color}
-              size={element.size}
-            />
-          ))}
-        </Suspense>
-      </Canvas>
+      <ThreeErrorBoundary onError={handleError} fallback={null}>
+        <Canvas 
+          camera={{ position: [0, 0, 5], fov: 75 }}
+          onCreated={(state) => {
+            // Canvas created successfully
+            state.gl.setClearColor('#000000', 0);
+          }}
+          onError={handleError}
+          dpr={[1, 2]}
+          performance={{ min: 0.5 }}
+          gl={{ 
+            antialias: true, 
+            alpha: true,
+            powerPreference: "default"
+          }}
+        >
+          <Suspense fallback={null}>
+            <MathScene mathElements={mathElements} />
+          </Suspense>
+        </Canvas>
+      </ThreeErrorBoundary>
     </div>
   );
 };
