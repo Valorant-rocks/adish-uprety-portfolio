@@ -108,6 +108,64 @@ body {
   font-weight: bold;
 }
 
+/* Typewriter text and cursor */
+.typewriter-text {
+  display: inline-block;
+  position: relative;
+}
+
+.cursor-blink {
+  color: #60a5fa;
+  font-weight: bold;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Button glow animations */
+.button-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.button-glow:hover::before {
+  left: 100%;
+}
+
+.button-glow-secondary {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-glow-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.button-glow-secondary:hover::before {
+  left: 100%;
+}
+
 /* Glassmorphism Effects */
 .glass {
   background: rgba(255, 255, 255, 0.1);
@@ -579,3 +637,10 @@ canvas {
     text-rendering: geometricPrecision;
   }
 }
+
+.fade-in-hero-content { animation: fadeInHero 1s ease; }
+@keyframes fadeInHero { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.fade-in-hero-content-stagger { animation: fadeInHeroStagger 0.9s cubic-bezier(0.4,0,0.2,1); }
+@keyframes fadeInHeroStagger { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+.fade-in-typewriter { animation: fadeInTypewriter 1.2s cubic-bezier(0.4,0,0.2,1); }
+@keyframes fadeInTypewriter { from { opacity: 0; } to { opacity: 1; } }
